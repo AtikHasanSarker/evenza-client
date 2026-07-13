@@ -12,7 +12,7 @@ export default function NotFound() {
         Page Not Found
       </h2>
       <p className="text-slate-600 max-w-md mb-8">
-        Sorry, we couldn't find the page you are looking for. It might have been moved, deleted, or never existed.
+        Sorry, we couldn&apos;t find the page you are looking for. It might have been moved, deleted, or never existed.
       </p>
       <Link
         href="/"
