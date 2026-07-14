@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import authService from "@/services/auth";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Enter a valid email address."),
@@ -44,11 +45,8 @@ export default function LoginForm() {
     setSubmitMessage(null);
 
     try {
-      await new Promise((resolve) => window.setTimeout(resolve, 650));
-      setSubmitMessage({
-        type: "success",
-        text: "Login form is ready for Better Auth integration.",
-      });
+      const res = await authService.login({ email: _values.email, password: _values.password });
+      setSubmitMessage({ type: "success", text: res?.message || "Signed in" });
     } finally {
       setIsSubmitting(false);
     }

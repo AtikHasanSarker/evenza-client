@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import authService from "@/services/auth";
 
 const registerSchema = z
   .object({
@@ -58,11 +59,8 @@ export default function RegisterForm() {
     setSubmitMessage(null);
 
     try {
-      await new Promise((resolve) => window.setTimeout(resolve, 700));
-      setSubmitMessage({
-        type: "success",
-        text: `Thanks, ${values.fullName.split(" ")[0] || "there"}! Your account details are ready for Better Auth integration.`,
-      });
+      const res = await authService.register({ fullName: values.fullName, email: values.email, password: values.password });
+      setSubmitMessage({ type: "success", text: res?.message || `Thanks, ${values.fullName.split(" ")[0] || "there"}!` });
     } finally {
       setIsSubmitting(false);
     }
