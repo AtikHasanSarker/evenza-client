@@ -1,7 +1,13 @@
+import HeroSection from "@/components/homepage/Banner";
+import Categories from "@/components/homepage/Categories";
+import FeaturedEvents from "@/components/homepage/FeaturedEvents";
+
 export default function Home() {
   return (
     <div>
-      <h2>Welcome to Evenza</h2>
+      <HeroSection />
+      <FeaturedEvents />
+      <Categories />
     </div>
   );
 }
