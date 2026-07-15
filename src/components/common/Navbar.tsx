@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import navLogo from "@/assets/images/nav-logo.png"
+import authClient from "@/lib/auth-client";
 
 const navLinks = [
   {
@@ -13,7 +14,7 @@ const navLinks = [
     href: "/",
   },
   {
-    label: "Explore",
+    label: "Explore Events",
     href: "/events",
   },
   {
@@ -28,16 +29,21 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
-
   const [isOpen, setIsOpen] = useState(false);
 
   // Later replace with JWT authentication
-  const isLoggedIn = false;
+  let isLoggedIn = false;
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+  if (user) {
+    isLoggedIn = true;
+  }
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
+  if(pathname.startsWith("/dashboard")) return null;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white">

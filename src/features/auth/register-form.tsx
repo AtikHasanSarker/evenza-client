@@ -12,7 +12,6 @@ export default function RegisterForm() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

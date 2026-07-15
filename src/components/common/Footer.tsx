@@ -1,10 +1,16 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { FaFacebook, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import logo from "@/assets/images/nav-logo.png";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+    if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <footer className="border-t bg-white">
       <div className="mx-auto grid max-w-7xl gap-20 px-4 py-8 md:grid-cols-5">

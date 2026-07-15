@@ -1,7 +1,15 @@
 import { betterAuth } from "better-auth";
+import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { MongoClient } from "mongodb";
+
+const client = new MongoClient(process.env.MONGODB_URI!);
+const db = client.db("evenza");
 
 export const auth = betterAuth({
-  secret: process.env.BETTER_AUTH_SECRET as string,
+  database: mongodbAdapter(db, {
+    client,
+  }),
+
   emailAndPassword: {
     enabled: true,
   },
