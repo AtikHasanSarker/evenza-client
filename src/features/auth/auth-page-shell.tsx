@@ -36,7 +36,7 @@ export default function AuthPageShell({
               Discover, manage, and grow your events with confidence.
             </h2>
             <p className="mt-4 max-w-xl text-base leading-7 text-slate-600">
-              The authentication experience is now styled and structured for a polished, responsive flow that is ready to connect to Better Auth later.
+              The authentication experience is now powered by Better Auth with real sign-in and sign-up flows for your event platform.
             </p>
             <div className="mt-8 space-y-3 text-sm text-slate-600">
               <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
@@ -49,7 +49,7 @@ export default function AuthPageShell({
               </div>
               <div className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-3">
                 <div className="mt-0.5 h-2.5 w-2.5 rounded-full bg-accent" />
-                <span>Placeholder submission flow that is easy to wire to Better Auth when you are ready.</span>
+                <span>Real registration and login flow that creates sessions and redirects users after success.</span>
               </div>
             </div>
           </div>

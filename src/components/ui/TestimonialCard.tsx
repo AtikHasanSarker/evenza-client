@@ -24,7 +24,7 @@ export default function TestimonialCard({
       </div>
 
       {/* Review */}
-      <p className="leading-7 text-gray-600">"{review}"</p>
+      <p className="leading-7 text-gray-600">&quot;{review}&quot;</p>
 
       {/* User */}
       <div className="mt-6 flex items-center gap-4">

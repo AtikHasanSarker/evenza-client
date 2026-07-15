@@ -9,7 +9,9 @@ type LoginPayload = {
   password: string;
 };
 
-async function postJson(path: string, body: any) {
+type JsonBody = Record<string, unknown>;
+
+async function postJson(path: string, body: JsonBody) {
   const res = await fetch(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -32,4 +34,6 @@ export async function logout() {
   return postJson("/api/auth/logout", {}).catch(() => null);
 }
 
-export default { register, login, logout };
+const authService = { register, login, logout };
+
+export default authService;

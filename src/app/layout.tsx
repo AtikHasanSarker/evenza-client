@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "react-hot-toast";
 import { Poppins } from "next/font/google";
 import { Providers } from "@/providers/providers";
 import "./globals.css";
@@ -32,6 +33,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <Footer />
+          <Toaster />
         </Providers>
       </body>
     </html>

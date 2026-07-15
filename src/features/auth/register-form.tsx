@@ -1,191 +1,126 @@
-'use client';
+"use client";
 
-import { useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "@heroui/react";
-import { Eye, EyeOff } from "lucide-react";
-import { z } from "zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import authService from "@/services/auth";
-
-const registerSchema = z
-  .object({
-    fullName: z.string().trim().min(2, "Full name must be at least 2 characters."),
-    email: z.string().trim().email("Enter a valid email address."),
-    password: z.string().min(8, "Password must be at least 8 characters."),
-    confirmPassword: z.string().min(8, "Please confirm your password."),
-    acceptTerms: z.boolean().refine((value) => value, {
-      message: "You must accept the terms and conditions.",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
-  });
-
-type RegisterFormValues = z.infer<typeof registerSchema>;
+import authClient from "@/lib/auth-client";
+import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 export default function RegisterForm() {
+  const router = useRouter();
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      acceptTerms: false,
-    },
-  });
-
-  const passwordToggleLabel = useMemo(() => (showPassword ? "Hide password" : "Show password"), [showPassword]);
-  const confirmPasswordToggleLabel = useMemo(
-    () => (showConfirmPassword ? "Hide confirm password" : "Show confirm password"),
-    [showConfirmPassword]
-  );
-
-  const onSubmit = async (values: RegisterFormValues) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsSubmitting(true);
-    setSubmitMessage(null);
+
+    const formData = new FormData(e.currentTarget);
+
+    const fullName = formData.get("fullName") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     try {
-      const res = await authService.register({ fullName: values.fullName, email: values.email, password: values.password });
-      setSubmitMessage({ type: "success", text: res?.message || `Thanks, ${values.fullName.split(" ")[0] || "there"}!` });
-    } finally {
+      const { data, error } = await authClient.signUp.email({
+        name: fullName,
+        email,
+        password,
+      });
+
+      if (error) {
+        return;
+      }
+      if (data?.token) {
+        toast.success("Account created successfully!");
+      }
+      setIsSubmitting(false);
+
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Signup error:", error);
       setIsSubmitting(false);
     }
   };
 
+  const handleGoogleSignin = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+    });
+    toast.success("Account created successfully!");
+  };
+
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-      {submitMessage && (
-        <div
-          className={`rounded-[12px] border px-4 py-3 text-sm ${
-            submitMessage.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-              : "border-rose-200 bg-rose-50 text-rose-700"
-          }`}
-        >
-          {submitMessage.text}
-        </div>
-      )}
-
-      <Controller
+    <form onSubmit={onSubmit} className="space-y-5">
+      <Input
         name="fullName"
-        control={control}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label="Full name"
-            placeholder="Taylor Morgan"
-            autoComplete="name"
-            isRequired
-            isInvalid={Boolean(errors.fullName)}
-            errorMessage={errors.fullName?.message}
-          />
-        )}
+        label="Full Name"
+        placeholder="John Doe"
+        autoComplete="name"
+        required
       />
 
-      <Controller
+      <Input
         name="email"
-        control={control}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label="Email address"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            isRequired
-            isInvalid={Boolean(errors.email)}
-            errorMessage={errors.email?.message}
-          />
-        )}
+        type="email"
+        label="Email Address"
+        placeholder="john@example.com"
+        autoComplete="email"
+        required
       />
 
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <div className="space-y-2">
-            <Input
-              {...field}
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Create a strong password"
-              autoComplete="new-password"
-              isRequired
-              isInvalid={Boolean(errors.password)}
-              errorMessage={errors.password?.message}
-            />
-            <div className="flex justify-end">
-              <button
-                type="button"
-                aria-label={passwordToggleLabel}
-                className="text-sm font-semibold text-primary transition hover:text-secondary"
-                onClick={() => setShowPassword((value) => !value)}
-              >
-                {showPassword ? "Hide password" : "Show password"}
-              </button>
-            </div>
-          </div>
-        )}
-      />
+      <div className="space-y-2">
+        <Input
+          name="password"
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          placeholder="Create a password"
+          autoComplete="new-password"
+          required
+        />
 
-      <Controller
-        name="confirmPassword"
-        control={control}
-        render={({ field }) => (
-          <div className="space-y-2">
-            <Input
-              {...field}
-              label="Confirm password"
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Re-enter your password"
-              autoComplete="new-password"
-              isRequired
-              isInvalid={Boolean(errors.confirmPassword)}
-              errorMessage={errors.confirmPassword?.message}
-            />
-            <div className="flex justify-end">
-              <button
-                type="button"
-                aria-label={confirmPasswordToggleLabel}
-                className="text-sm font-semibold text-primary transition hover:text-secondary"
-                onClick={() => setShowConfirmPassword((value) => !value)}
-              >
-                {showConfirmPassword ? "Hide password" : "Show password"}
-              </button>
-            </div>
-          </div>
-        )}
-      />
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="text-sm font-medium text-primary hover:text-secondary"
+          >
+            {showPassword ? "Hide Password" : "Show Password"}
+          </button>
+        </div>
+      </div>
 
-      <Controller
-        name="acceptTerms"
-        control={control}
-        render={({ field }) => (
-          <Checkbox isSelected={Boolean(field.value)} onChange={(value) => field.onChange(value)}>
-            <span className="text-sm text-slate-600">
-              I accept the terms and conditions.
-            </span>
-          </Checkbox>
-        )}
-      />
-      {errors.acceptTerms && <p className="-mt-2 text-sm text-danger">{errors.acceptTerms.message}</p>}
+      <Button
+        type="submit"
+        color="primary"
+        className="h-10 w-full"
+        isLoading={isSubmitting}
+        isDisabled={isSubmitting}
+      >
+        {isSubmitting ? "Creating Account..." : "Create Account"}
+      </Button>
 
-      <Button type="submit" color="primary" className="w-full" isLoading={isSubmitting} isDisabled={isSubmitting}>
-        {isSubmitting ? "Creating account..." : "Create account"}
+      <div className="relative my-5">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-200"></span>
+        </div>
+
+        <div className="relative flex justify-center">
+          <span className="bg-white px-4 text-sm text-gray-500">OR</span>
+        </div>
+      </div>
+
+      <Button
+        type="button"
+        onClick={handleGoogleSignin}
+        className="h-10 w-full font-semibold"
+      >
+        <FcGoogle className="text-xl" />
+        Sign in with Google
       </Button>
     </form>
   );

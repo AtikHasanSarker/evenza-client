@@ -1,156 +1,111 @@
-'use client';
+"use client";
 
-import { useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Checkbox } from "@heroui/react";
-import { Eye, EyeOff } from "lucide-react";
-import { z } from "zod";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import authService from "@/services/auth";
-
-const loginSchema = z.object({
-  email: z.string().trim().email("Enter a valid email address."),
-  password: z.string().min(8, "Password must be at least 8 characters."),
-  rememberMe: z.boolean().optional(),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
+import authClient from "@/lib/auth-client";
+import { FcGoogle } from "react-icons/fc";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    setFocus,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-  });
-
-  const passwordToggleLabel = useMemo(() => (showPassword ? "Hide password" : "Show password"), [showPassword]);
-
-  const onSubmit = async (_values: LoginFormValues) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsSubmitting(true);
-    setSubmitMessage(null);
+
+    const formData = new FormData(e.currentTarget);
+
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     try {
-      const res = await authService.login({ email: _values.email, password: _values.password });
-      setSubmitMessage({ type: "success", text: res?.message || "Signed in" });
-    } finally {
+      const { error } = await authClient.signIn.email({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Login error:", error);
+        setIsSubmitting(false);
+        return;
+      }
+
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
       setIsSubmitting(false);
     }
   };
 
-  const handleDemoLogin = () => {
-    setValue("email", "demo@evenza.com", { shouldValidate: true });
-    setValue("password", "DemoPass123!", { shouldValidate: true });
-    setValue("rememberMe", true, { shouldValidate: true });
-    setFocus("password");
-    setSubmitMessage({
-      type: "success",
-      text: "Demo credentials filled in. Connect this action to Better Auth later.",
+  const handleGoogleSignin = async () => {
+    await authClient.signIn.social({
+      provider: "google",
     });
   };
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-      {submitMessage && (
-        <div
-          className={`rounded-[12px] border px-4 py-3 text-sm ${
-            submitMessage.type === "success"
-              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-              : "border-rose-200 bg-rose-50 text-rose-700"
-          }`}
-        >
-          {submitMessage.text}
-        </div>
-      )}
-
-      <Controller
+    <form onSubmit={onSubmit} className="space-y-5">
+      <Input
         name="email"
-        control={control}
-        render={({ field }) => (
-          <Input
-            {...field}
-            label="Email address"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            isRequired
-            isInvalid={Boolean(errors.email)}
-            errorMessage={errors.email?.message}
-          />
-        )}
+        type="email"
+        label="Email Address"
+        placeholder="you@example.com"
+        autoComplete="email"
+        required
       />
 
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <div className="space-y-2">
-            <Input
-              {...field}
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              isRequired
-              isInvalid={Boolean(errors.password)}
-              errorMessage={errors.password?.message}
-            />
-            <div className="flex justify-end">
-              <button
-                type="button"
-                aria-label={passwordToggleLabel}
-                className="text-sm font-semibold text-primary transition hover:text-secondary"
-                onClick={() => setShowPassword((value) => !value)}
-              >
-                {showPassword ? "Hide password" : "Show password"}
-              </button>
-            </div>
-          </div>
-        )}
-      />
-
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Controller
-          name="rememberMe"
-          control={control}
-          render={({ field }) => (
-            <Checkbox isSelected={Boolean(field.value)} onChange={(value) => field.onChange(value)}>
-              <span className="text-sm text-slate-600">Remember me</span>
-            </Checkbox>
-          )}
+      <div className="space-y-2">
+        <Input
+          name="password"
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          placeholder="Enter your password"
+          autoComplete="current-password"
+          required
         />
 
-        <button
-          type="button"
-          className="text-sm font-semibold text-primary transition hover:text-secondary"
-        >
-          Forgot password?
-        </button>
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="text-sm font-medium text-primary hover:text-secondary"
+          >
+            {showPassword ? "Hide Password" : "Show Password"}
+          </button>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-3 pt-2">
-        <Button type="submit" color="primary" className="w-full" isLoading={isSubmitting} isDisabled={isSubmitting}>
-          {isSubmitting ? "Signing in..." : "Login"}
-        </Button>
+      <Button
+        type="submit"
+        color="primary"
+        className="h-10 w-full"
+        isLoading={isSubmitting}
+        isDisabled={isSubmitting}
+      >
+        {isSubmitting ? "Signing in..." : "Login"}
+      </Button>
 
-        <Button type="button" color="accent" variant="bordered" className="w-full" onClick={handleDemoLogin}>
-          Demo Login
-        </Button>
+      <div className="relative my-5">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-gray-200"></span>
+        </div>
+
+        <div className="relative flex justify-center">
+          <span className="bg-white px-4 text-sm text-gray-500">OR</span>
+        </div>
       </div>
+
+      <Button
+        type="button"
+        onClick={handleGoogleSignin}
+        className="h-10 w-full font-semibold"
+      >
+        <FcGoogle className="text-xl" />
+        Sign in with Google
+      </Button>
     </form>
   );
 }
