@@ -169,9 +169,10 @@ export default function ExploreEventsPage() {
           {pagination && pagination.pages > 1 && (
             <div className="mt-10 flex items-center justify-center gap-2">
               <Button
-                variant="bordered"
+                color="accent"
                 onClick={() => handlePageChange(currentPage - 1)}
                 isDisabled={currentPage === 1}
+                className="px-3 h-10"
               >
                 Previous
               </Button>
@@ -180,9 +181,10 @@ export default function ExploreEventsPage() {
                 (page) => (
                   <Button
                     key={page}
-                    color={page === currentPage ? "primary" : "default"}
+                    color={page === currentPage ? "primary" : "accent"}
                     variant={page === currentPage ? "solid" : "bordered"}
                     onClick={() => handlePageChange(page)}
+                    className="px-3 h-10"
                   >
                     {page}
                   </Button>
@@ -190,9 +192,10 @@ export default function ExploreEventsPage() {
               )}
 
               <Button
-                variant="bordered"
+                color="accent"
                 onClick={() => handlePageChange(currentPage + 1)}
                 isDisabled={currentPage === pagination.pages}
+                className="px-3 h-10"
               >
                 Next
               </Button>

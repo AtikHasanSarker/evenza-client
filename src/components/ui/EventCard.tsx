@@ -22,7 +22,7 @@ export default function EventCard({
   price,
 }: EventCardProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+    <div className="overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-xl border border-gray-200 bg-white">
       <Image
         src={image}
         alt={title}

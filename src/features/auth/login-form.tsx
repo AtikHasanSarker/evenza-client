@@ -107,8 +107,8 @@ export default function LoginForm() {
         type="button"
         onClick={handleGoogleSignin}
         className="h-10 w-full font-semibold"
+        startContent={<FcGoogle className="text-xl" />}
       >
-        <FcGoogle className="text-xl" />
         Sign in with Google
       </Button>
     </form>

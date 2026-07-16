@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
-import navLogo from "@/assets/images/nav-logo.png"
+import navLogo from "@/assets/images/nav-logo.png";
 import authClient from "@/lib/auth-client";
+import { Button } from "@heroui/react";
+import toast from "react-hot-toast";
 
 const navLinks = [
   {
@@ -29,6 +31,7 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
   // Later replace with JWT authentication
@@ -43,14 +46,33 @@ export default function Navbar() {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
-  if(pathname.startsWith("/dashboard")) return null;
+  if (pathname.startsWith("/dashboard")) return null;
+
+  const handleLogout = async () => {
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      toast.error(error.message || "Logout failed");
+      return;
+    }
+
+    toast.success("Logged out successfully");
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <Image src={navLogo} alt="EventHub" width={150} height={150} priority />
+          <Image
+            src={navLogo}
+            alt="EventHub"
+            width={150}
+            height={150}
+            priority
+          />
         </Link>
 
         {/* Desktop Menu */}
@@ -97,7 +119,10 @@ export default function Navbar() {
                 Dashboard
               </Link>
 
-              <button className="rounded-md border px-4 py-2 text-sm font-medium hover:bg-gray-100">
+              <button
+                onClick={handleLogout}
+                className="rounded-md bg-red-500 text-white border px-4 py-2 text-sm font-medium hover:bg-red-700"
+              >
                 Logout
               </button>
             </>
@@ -161,7 +186,10 @@ export default function Navbar() {
                     Dashboard
                   </Link>
 
-                  <button className="w-full rounded-md border px-4 py-2 text-sm font-medium">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full bg-red-500 text-white rounded-md border px-4 py-2 text-sm font-medium"
+                  >
                     Logout
                   </button>
                 </div>

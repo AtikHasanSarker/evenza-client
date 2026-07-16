@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
 export interface Event {
   _id: string;
@@ -66,11 +66,9 @@ export const fetchEvents = async (
 /**
  * Fetch a single event by ID
  */
-export const fetchEventById = async (id: string): Promise<EventDetailsResponse> => {
+export const fetchEventById = async (id: string): Promise<Event> => {
   try {
-    const response = await axios.get<EventDetailsResponse>(
-      `${API_BASE_URL}/events/${id}`
-    );
+    const response = await axios.get<Event>(`${API_BASE_URL}/events/${id}`);
 
     return response.data;
   } catch (error) {

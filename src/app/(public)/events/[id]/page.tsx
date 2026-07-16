@@ -13,6 +13,7 @@ import {
   Share2,
   ArrowRight,
   MapPin,
+  Armchair,
 } from "lucide-react";
 import { fetchEventById, fetchEvents, Event } from "@/services/api/events";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -36,9 +37,8 @@ export default function EventDetailsPage() {
         setError(null);
 
         const eventData = await fetchEventById(eventId);
-        setEvent(eventData.data);
-
-        const relatedData = await fetchEvents(1, 3, eventData.data.category);
+        setEvent(eventData);
+        const relatedData = await fetchEvents(1, 3, eventData.category);
         setRelatedEvents(
           relatedData.data.filter((e) => e._id !== eventId).slice(0, 3)
         );
@@ -61,6 +61,8 @@ export default function EventDetailsPage() {
       </div>
     );
   }
+  console.log(relatedEvents);
+  console.log(event);
 
   if (error || !event) {
     return (
@@ -70,7 +72,7 @@ export default function EventDetailsPage() {
             {error || "Event not found"}
           </p>
           <Link href="/explore">
-            <Button className="mt-4">
+            <Button className="mt-4 p-2">
               Back to Events
             </Button>
           </Link>
@@ -95,7 +97,7 @@ export default function EventDetailsPage() {
 
         {/* Category Badge */}
         <div className="absolute left-6 top-6">
-          <span className="inline-block rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white capitalize">
+          <span className="inline-block rounded-full bg-warning px-4 py-2 text-sm font-semibold text-white capitalize">
             {event.category}
           </span>
         </div>
@@ -111,10 +113,10 @@ export default function EventDetailsPage() {
               {event.title}
             </h1>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Button className="font-semibold">
+              <Button className="font-semibold px-2 bg-secondary">
                 Book Ticket - ${event.price}
               </Button>
-              <Button variant="bordered">
+              <Button variant="bordered" className="p-2">
                 <Share2 size={20} />
               </Button>
             </div>
@@ -126,7 +128,7 @@ export default function EventDetailsPage() {
           <div className="grid gap-6 sm:grid-cols-2">
             {/* Date & Time */}
             <Card className="p-6">
-              <div className="flex gap-4">
+              <div className="flex item-center gap-4">
                 <Calendar className="h-8 w-8 text-primary shrink-0" />
                 <div>
                   <p className="text-sm text-gray-600">Date & Time</p>
@@ -145,7 +147,7 @@ export default function EventDetailsPage() {
 
             {/* Location */}
             <Card className="p-6">
-              <div className="flex gap-4">
+              <div className="flex item-center gap-4">
                 <MapPin className="h-8 w-8 text-primary shrink-0" />
                 <div>
                   <p className="text-sm text-gray-600">Location</p>
@@ -158,12 +160,23 @@ export default function EventDetailsPage() {
 
             {/* Venue */}
             <Card className="p-6 sm:col-span-2">
-              <div className="flex gap-4">
+              <div className="flex item-center gap-4">
                 <Building className="h-8 w-8 text-primary shrink-0" />
                 <div className="flex-1">
                   <p className="text-sm text-gray-600">Venue</p>
                   <p className="mt-1 text-lg font-semibold text-gray-900">
                     {event.venue}
+                  </p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-6 sm:col-span-2">
+              <div className="flex item-center gap-4">
+                <Armchair className="h-8 w-8 text-primary shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600">Total Seats</p>
+                  <p className="mt-1 text-lg font-semibold text-success">
+                    {event.seats}
                   </p>
                 </div>
               </div>
@@ -190,7 +203,7 @@ export default function EventDetailsPage() {
             <div className="space-y-6">
               <div>
                 <p className="text-sm font-medium text-gray-600">Price</p>
-                <p className="mt-2 text-4xl font-bold text-primary">
+                <p className="mt-2 text-4xl font-bold text-accent">
                   ${event.price}
                   {event.price === 0 && <span className="text-lg">FREE</span>}
                 </p>
@@ -230,21 +243,21 @@ export default function EventDetailsPage() {
                 <div className="flex gap-3">
                   <Link
                     href="#"
-                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-primary hover:text-primary"
                   >
                     <FaFacebook size={18} />
                   </Link>
 
                   <Link
                     href="#"
-                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-primary hover:text-primary"
                   >
                     <FaInstagram size={18} />
                   </Link>
 
                   <Link
                     href="#"
-                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-primary hover:text-primary"
                   >
                     <FaLinkedinIn size={18} />
                   </Link>
@@ -276,8 +289,9 @@ export default function EventDetailsPage() {
             <Link href={`/explore?category=${event.category}`}>
               <Button
                 variant="light"
-                color="primary"
+                color="secondary"
                 endContent={<ArrowRight size={18} />}
+                className="px-2 h-10"
               >
                 View All
               </Button>
