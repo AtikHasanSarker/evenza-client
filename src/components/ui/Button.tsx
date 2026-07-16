@@ -2,10 +2,20 @@ import React from "react";
 import { LoaderCircle } from "lucide-react";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  color?: "primary" | "secondary" | "accent" | "danger" | "success" | "warning" | "default";
+  color?:
+    | "primary"
+    | "secondary"
+    | "accent"
+    | "danger"
+    | "success"
+    | "warning"
+    | "default";
   variant?: "solid" | "bordered" | "light" | "flat";
   isLoading?: boolean;
   isDisabled?: boolean;
+
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
 }
 
 export default function Button({
@@ -15,6 +25,8 @@ export default function Button({
   variant = "solid",
   isLoading = false,
   isDisabled = false,
+  startContent,
+  endContent,
   type = "button",
   ...props
 }: ButtonProps) {
@@ -22,13 +34,15 @@ export default function Button({
 
   if (color === "accent") {
     if (variant === "bordered") {
-      colorClasses = "border-[#F59E0B] text-[#F59E0B] hover:bg-[#F59E0B]/10";
+      colorClasses =
+        "border border-[#F59E0B] text-[#F59E0B] hover:bg-[#F59E0B]/10";
     } else if (variant === "light") {
       colorClasses = "text-[#F59E0B] hover:bg-[#F59E0B]/10";
     } else if (variant === "flat") {
       colorClasses = "bg-[#F59E0B]/20 text-[#D97706]";
     } else {
-      colorClasses = "bg-[#F59E0B] text-slate-900 hover:bg-[#D97706] font-semibold";
+      colorClasses =
+        "bg-[#F59E0B] text-slate-900 hover:bg-[#D97706] font-semibold";
     }
   } else if (color === "secondary") {
     colorClasses = "bg-[#7C3AED] text-white hover:bg-[#6D28D9]";
@@ -42,7 +56,16 @@ export default function Button({
     colorClasses = "bg-primary text-white hover:bg-blue-700";
   }
 
-  const baseClasses = `font-heading font-semibold rounded-[12px] transition-all duration-200 active:scale-[0.98] ${colorClasses} ${className}`;
+  const baseClasses = `
+    inline-flex items-center justify-center gap-2
+    rounded-[12px]
+    font-heading font-semibold
+    transition-all duration-200
+    active:scale-[0.98]
+    disabled:cursor-not-allowed disabled:opacity-60
+    ${colorClasses}
+    ${className}
+  `;
 
   return (
     <button
@@ -51,10 +74,15 @@ export default function Button({
       disabled={isDisabled || isLoading}
       {...props}
     >
-      <span className="inline-flex items-center justify-center gap-2">
-        {children}
-        {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : null}
-      </span>
+      {!isLoading && startContent}
+
+      <span>{children}</span>
+
+      {isLoading ? (
+        <LoaderCircle className="h-4 w-4 animate-spin" />
+      ) : (
+        endContent
+      )}
     </button>
   );
 }

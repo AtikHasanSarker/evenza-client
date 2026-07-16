@@ -7,6 +7,7 @@ import Input from "@/components/ui/Input";
 import authClient from "@/lib/auth-client";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
+import { Label, TextField } from "@heroui/react";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -55,32 +56,34 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      <Input
-        name="fullName"
-        label="Full Name"
-        placeholder="John Doe"
-        autoComplete="name"
-        required
-      />
+      <TextField className="w-full" isRequired>
+        <Label>Full Name</Label>
 
-      <Input
-        name="email"
-        type="email"
-        label="Email Address"
-        placeholder="john@example.com"
-        autoComplete="email"
-        required
-      />
+        <Input name="fullName" placeholder="John Doe" autoComplete="name" />
+      </TextField>
+
+      <TextField className="w-full" isRequired>
+        <Label>Email Address</Label>
+
+        <Input
+          name="email"
+          type="email"
+          placeholder="john@example.com"
+          autoComplete="email"
+        />
+      </TextField>
 
       <div className="space-y-2">
-        <Input
-          name="password"
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Create a password"
-          autoComplete="new-password"
-          required
-        />
+        <TextField className="w-full" isRequired>
+          <Label>Password</Label>
+
+          <Input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Create a password"
+            autoComplete="new-password"
+          />
+        </TextField>
 
         <div className="flex justify-end">
           <button

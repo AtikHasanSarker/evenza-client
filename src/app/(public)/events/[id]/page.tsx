@@ -4,20 +4,21 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Card, Separator } from "@heroui/react";
+import { Card, Separator } from "@heroui/react";
 import {
   Calendar,
-  MapPin,
-  DollarSign,
   User,
   Mail,
   Building,
   Share2,
   ArrowRight,
+  MapPin,
 } from "lucide-react";
 import { fetchEventById, fetchEvents, Event } from "@/services/api/events";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import EventCard from "@/components/ui/EventCard";
+import Button from "@/components/ui/Button";
+import { FaFacebook, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export default function EventDetailsPage() {
   const params = useParams();
@@ -39,7 +40,7 @@ export default function EventDetailsPage() {
 
         const relatedData = await fetchEvents(1, 3, eventData.data.category);
         setRelatedEvents(
-          relatedData.data.filter((e) => e.id !== eventId).slice(0, 3)
+          relatedData.data.filter((e) => e._id !== eventId).slice(0, 3)
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load event");
@@ -69,7 +70,7 @@ export default function EventDetailsPage() {
             {error || "Event not found"}
           </p>
           <Link href="/explore">
-            <Button color="primary" className="mt-4">
+            <Button className="mt-4">
               Back to Events
             </Button>
           </Link>
@@ -110,19 +111,10 @@ export default function EventDetailsPage() {
               {event.title}
             </h1>
             <div className="mt-4 flex flex-wrap gap-3">
-              <Button
-                color="primary"
-                size="lg"
-                startContent={<DollarSign size={20} />}
-                className="font-semibold"
-              >
+              <Button className="font-semibold">
                 Book Ticket - ${event.price}
               </Button>
-              <Button
-                isIconOnly
-                variant="bordered"
-                size="lg"
-              >
+              <Button variant="bordered">
                 <Share2 size={20} />
               </Button>
             </div>
@@ -178,7 +170,7 @@ export default function EventDetailsPage() {
             </Card>
           </div>
 
-          <Divider />
+          <Separator />
 
           {/* Description */}
           <div>
@@ -204,7 +196,7 @@ export default function EventDetailsPage() {
                 </p>
               </div>
 
-              <Divider />
+              <Separator />
 
               {/* Organizer Info */}
               <div>
@@ -230,33 +222,32 @@ export default function EventDetailsPage() {
                 </div>
               </div>
 
-              <Divider />
+              <Separator />
 
               {/* Share Buttons */}
               <div>
                 <p className="mb-3 text-sm font-medium text-gray-600">Share</p>
                 <div className="flex gap-3">
-                  <Button
-                    isIconOnly
-                    variant="bordered"
-                    className="flex-1"
+                  <Link
+                    href="#"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
                   >
-                    f
-                  </Button>
-                  <Button
-                    isIconOnly
-                    variant="bordered"
-                    className="flex-1"
+                    <FaFacebook size={18} />
+                  </Link>
+
+                  <Link
+                    href="#"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
                   >
-                    𝕏
-                  </Button>
-                  <Button
-                    isIconOnly
-                    variant="bordered"
-                    className="flex-1"
+                    <FaInstagram size={18} />
+                  </Link>
+
+                  <Link
+                    href="#"
+                    className="rounded-full border p-2 text-gray-600 transition hover:border-[#2563EB] hover:text-[#2563EB]"
                   >
-                    in
-                  </Button>
+                    <FaLinkedinIn size={18} />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -266,9 +257,8 @@ export default function EventDetailsPage() {
           <Link href="/explore" className="w-full">
             <Button
               variant="bordered"
-              fullWidth
-              size="lg"
               endContent={<ArrowRight size={20} />}
+              className="w-full h-10"
             >
               Back to Events
             </Button>
@@ -297,8 +287,8 @@ export default function EventDetailsPage() {
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {relatedEvents.map((relatedEvent) => (
               <EventCard
-                key={relatedEvent.id}
-                id={relatedEvent.id}
+                key={relatedEvent._id}
+                id={relatedEvent._id}
                 title={relatedEvent.title}
                 image={relatedEvent.image}
                 category={relatedEvent.category}

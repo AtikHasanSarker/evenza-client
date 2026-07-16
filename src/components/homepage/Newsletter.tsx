@@ -1,7 +1,7 @@
 "use client";
-
-import { Button, Input } from "@heroui/react";
 import { Mail } from "lucide-react";
+import Input from "../ui/Input";
+import Button from "../ui/Button";
 
 export default function Newsletter() {
   return (
@@ -23,15 +23,12 @@ export default function Newsletter() {
             <Input
               type="email"
               placeholder="Enter your email address"
-              variant="flat"
-              radius="md"
-              className="flex-1"
+              className="flex-1 rounded-md"
             />
 
             <Button
               color="warning"
-              radius="md"
-              className="font-semibold text-black sm:px-8"
+              className="font-semibold text-black sm:px-8 rounded-md"
             >
               Subscribe
             </Button>

@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import authClient from "@/lib/auth-client";
 import { FcGoogle } from "react-icons/fc";
+import { Label, TextField } from "@heroui/react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -48,24 +49,28 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      <Input
-        name="email"
-        type="email"
-        label="Email Address"
-        placeholder="you@example.com"
-        autoComplete="email"
-        required
-      />
+      <TextField className="w-full" isRequired>
+        <Label>Email Address</Label>
+
+        <Input
+          name="email"
+          type="email"
+          placeholder="you@example.com"
+          autoComplete="email"
+        />
+      </TextField>
 
       <div className="space-y-2">
-        <Input
-          name="password"
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Enter your password"
-          autoComplete="current-password"
-          required
-        />
+        <TextField className="w-full" isRequired>
+          <Label>Password</Label>
+
+          <Input
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter your password"
+            autoComplete="current-password"
+          />
+        </TextField>
 
         <div className="flex justify-end">
           <button

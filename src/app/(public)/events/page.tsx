@@ -2,8 +2,15 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Input, Select } from "@heroui/react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search } from "lucide-react";
+import {
+  Label,
+  ListBox,
+  Select,
+} from "@heroui/react";
+
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import EventCard from "@/components/ui/EventCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useEvents } from "@/hooks/useEvents";
@@ -20,12 +27,14 @@ const categories = [
 
 export default function ExploreEventsPage() {
   const searchParams = useSearchParams();
+
   const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1")
+    Number(searchParams.get("page")) || 1,
   );
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [tempSearch, setTempSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const { events, isLoading, error, pagination } = useEvents({
     page: currentPage,
@@ -44,14 +53,20 @@ export default function ExploreEventsPage() {
     setCurrentPage(1);
   };
 
-  const handlePageChange = (newPage: number) => {
-    if (newPage >= 1 && pagination && newPage <= pagination.pages) {
-      setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const handlePageChange = (page: number) => {
+    if (!pagination) return;
+
+    if (page >= 1 && page <= pagination.pages) {
+      setCurrentPage(page);
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
@@ -59,77 +74,80 @@ export default function ExploreEventsPage() {
 
   return (
     <div className="space-y-8 py-8">
-      {/* Header */}
+      {/* Page Heading */}
       <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900">Explore Events</h1>
-        <p className="mt-2 text-gray-600">
-          Discover and attend amazing events in your area
+        <h1 className="text-4xl font-bold">Explore Events</h1>
+
+        <p className="mt-2 text-default-500">
+          Discover amazing events happening around you.
         </p>
       </div>
 
-      {/* Filters Section */}
-      <div className="space-y-4 rounded-xl border border-gray-200 bg-white p-6">
+      {/* Search & Filter */}
+      <div className="rounded-2xl border bg-white p-6 space-y-5">
         <div className="grid gap-4 md:grid-cols-3">
-          {/* Search Input */}
           <div className="md:col-span-2">
             <Input
-              placeholder="Search events by title..."
+              placeholder="Search events..."
               value={tempSearch}
               onChange={(e) => setTempSearch(e.target.value)}
-              onKeyPress={handleKeyPress}
-              startContent={<Search size={18} className="text-gray-400" />}
-              className="w-full"
+              onKeyDown={handleKeyDown}
+              startContent={<Search size={18} className="text-default-400" />}
             />
           </div>
 
-          {/* Search Button */}
-          <Button
-            onClick={handleSearch}
-            color="primary"
-            className="w-full"
-            size="lg"
-          >
+          <Button onClick={handleSearch} className="w-full">
             Search
           </Button>
         </div>
 
-        {/* Category Filter */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Category
-          </label>
-          <Select
-            placeholder="Select a category"
-            selectedKeys={selectedCategory ? [selectedCategory] : ["all"]}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            className="w-full"
-          >
-            {/* {CATEGORIES.map((category) => (
-              <SelectItem key={category.value || "all"} value={category.value || "all"}>
-                {category.label}
-              </SelectItem>
-            ))} */}
-          </Select>
-        </div>
-      </div>
+        <Select
+          placeholder="Select Category"
+          selectedKey={selectedCategory || null}
+          onSelectionChange={(key) => {
+            handleCategoryChange((key as string) ?? "");
+          }}
+        >
+          <Label>Category</Label>
 
-      {/* Loading State */}
+          <Select.Trigger>
+            <Select.Value />
+            <Select.Indicator />
+          </Select.Trigger>
+
+          <Select.Popover>
+            <ListBox>
+              {categories.map((category) => (
+                <ListBox.Item
+                  key={category.value}
+                  id={category.value}
+                  textValue={category.label}
+                >
+                  {category.label}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
+      </div>
+      {/* Loading */}
       {isLoading && (
-        <div className="flex justify-center py-20">
+        <div className="flex justify-center py-16">
           <LoadingSpinner />
         </div>
       )}
 
-      {/* Error State */}
-      {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
-          <p className="text-red-700">
-            Failed to load events. Please try again later.
+      {/* Error */}
+      {!isLoading && error && (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+          <p className="text-red-600">
+            Failed to load events. Please try again.
           </p>
         </div>
       )}
 
-      {/* Events Grid */}
+      {/* Events */}
       {!isLoading && !error && events.length > 0 && (
         <>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -147,68 +165,61 @@ export default function ExploreEventsPage() {
             ))}
           </div>
 
-          {/* Pagination Controls */}
+          {/* Pagination */}
           {pagination && pagination.pages > 1 && (
-            <div className="flex items-center justify-center gap-4">
+            <div className="mt-10 flex items-center justify-center gap-2">
               <Button
-                isIconOnly
-                variant="outline"
+                variant="bordered"
                 onClick={() => handlePageChange(currentPage - 1)}
                 isDisabled={currentPage === 1}
               >
-                <ChevronLeft size={20} />
+                Previous
               </Button>
 
-              <div className="flex items-center gap-2">
-                {Array.from({ length: Math.min(pagination.pages, 5) }).map(
-                  (_, index) => {
-                    const pageNum =
-                      pagination.pages <= 5 ? index + 1 : currentPage - 2 + index;
-
-                    if (pageNum < 1 || pageNum > pagination.pages) {
-                      return null;
-                    }
-
-                    return (
-                      <Button
-                        key={pageNum}
-                        onClick={() => handlePageChange(pageNum)}
-                        variant={pageNum === currentPage ? "solid" : "outline"}
-                        color={pageNum === currentPage ? "primary" : "default"}
-                        isIconOnly
-                      >
-                        {pageNum}
-                      </Button>
-                    );
-                  }
-                )}
-              </div>
+              {Array.from({ length: pagination.pages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    color={page === currentPage ? "primary" : "default"}
+                    variant={page === currentPage ? "solid" : "bordered"}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </Button>
+                ),
+              )}
 
               <Button
-                isIconOnly
-                variant="outline"
+                variant="bordered"
                 onClick={() => handlePageChange(currentPage + 1)}
                 isDisabled={currentPage === pagination.pages}
               >
-                <ChevronRight size={20} />
+                Next
               </Button>
             </div>
           )}
 
-          {/* Results Info */}
-          <div className="text-center text-sm text-gray-600">
-            Showing {(currentPage - 1) * pagination.limit + 1} to{" "}
-            {Math.min(currentPage * pagination.limit, pagination.total)} of{" "}
-            {pagination.total} events
-          </div>
+          {/* Result Count */}
+          {pagination && (
+            <div className="text-center text-sm text-default-500">
+              Showing {(currentPage - 1) * pagination.limit + 1}
+              {" - "}
+              {Math.min(
+                currentPage * pagination.limit,
+                pagination.total,
+              )} of {pagination.total} events
+            </div>
+          )}
         </>
       )}
 
-      {/* No Results State */}
+      {/* Empty State */}
       {!isLoading && !error && events.length === 0 && (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
-          <p className="text-gray-600">
-            No events found. Try adjusting your filters or search query.
+        <div className="rounded-2xl border bg-white p-12 text-center">
+          <h3 className="text-xl font-semibold">No Events Found</h3>
+
+          <p className="mt-2 text-default-500">
+            Try changing your search keyword or category.
           </p>
         </div>
       )}

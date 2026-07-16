@@ -6,9 +6,10 @@ import { Event, EventsResponse } from "@/services/api/events";
  */
 const mockEvents: Event[] = [
   {
-    id: "1",
+    _id: "1",
     title: "React Workshop 2024",
-    image: "https://images.unsplash.com/photo-1540575467063-178f50002fbb?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1540575467063-178f50002fbb?w=500&h=300&fit=crop",
     category: "technology",
     date: "2024-08-15",
     location: "San Francisco, CA",
@@ -21,9 +22,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "2",
+    _id: "2",
     title: "Web Development Conference",
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&h=300&fit=crop",
     category: "technology",
     date: "2024-08-20",
     location: "New York, NY",
@@ -36,9 +38,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "3",
+    _id: "3",
     title: "Jazz Night at the Venue",
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&h=300&fit=crop",
     category: "music",
     date: "2024-08-25",
     location: "Los Angeles, CA",
@@ -51,9 +54,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "4",
+    _id: "4",
     title: "Business Leadership Summit",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
     category: "business",
     date: "2024-09-01",
     location: "Chicago, IL",
@@ -66,9 +70,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "5",
+    _id: "5",
     title: "Sports Festival 2024",
-    image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=500&h=300&fit=crop",
     category: "sports",
     date: "2024-09-05",
     location: "Boston, MA",
@@ -81,9 +86,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "6",
+    _id: "6",
     title: "Art Exhibition Opening",
-    image: "https://images.unsplash.com/photo-1578321272176-0f74c16c1c44?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1578321272176-0f74c16c1c44?w=500&h=300&fit=crop",
     category: "art",
     date: "2024-09-10",
     location: "Miami, FL",
@@ -96,9 +102,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "7",
+    _id: "7",
     title: "TypeScript Advanced Patterns",
-    image: "https://images.unsplash.com/photo-1516321318423-f06f70d504d0?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1516321318423-f06f70d504d0?w=500&h=300&fit=crop",
     category: "technology",
     date: "2024-09-12",
     location: "Seattle, WA",
@@ -111,9 +118,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "8",
+    _id: "8",
     title: "Educational Summit",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
     category: "education",
     date: "2024-09-15",
     location: "Austin, TX",
@@ -126,9 +134,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "9",
+    _id: "9",
     title: "Rock Concert",
-    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=300&fit=crop",
     category: "music",
     date: "2024-09-20",
     location: "Denver, CO",
@@ -141,9 +150,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "10",
+    _id: "10",
     title: "Digital Marketing Bootcamp",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
     category: "business",
     date: "2024-09-22",
     location: "Phoenix, AZ",
@@ -156,9 +166,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "11",
+    _id: "11",
     title: "Marathon Race Day",
-    image: "https://images.unsplash.com/photo-1469394662684-2b8fd3d3a01d?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1469394662684-2b8fd3d3a01d?w=500&h=300&fit=crop",
     category: "sports",
     date: "2024-09-25",
     location: "Portland, OR",
@@ -171,9 +182,10 @@ const mockEvents: Event[] = [
     },
   },
   {
-    id: "12",
+    _id: "12",
     title: "Photography Workshop",
-    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=300&fit=crop",
+    image:
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500&h=300&fit=crop",
     category: "art",
     date: "2024-09-28",
     location: "Santa Fe, NM",
@@ -238,8 +250,8 @@ export const mockFetchEvents = (
 /**
  * Mock API response for single event
  */
-export const mockFetchEventById = (id: string) => {
-  const event = mockEvents.find((e) => e.id === id);
+export const mockFetchEventBy_id = (id: string) => {
+  const event = mockEvents.find((e) => e._id === id);
 
   if (!event) {
     throw new Error("Event not found");

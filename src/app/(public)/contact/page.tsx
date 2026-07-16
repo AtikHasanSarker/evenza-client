@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Input, TextArea, Button, Card } from "@heroui/react";
+import { Input, TextArea, Card, TextField, Label } from "@heroui/react";
 import { Mail, Phone, MapPin } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +20,7 @@ export default function ContactPage() {
       <div className="text-center">
         <h1 className="text-4xl font-bold text-gray-900">Contact Us</h1>
         <p className="mt-2 text-gray-600">
-          Have questions? We'd love to hear from you.
+          Have questions? We&#39;d love to hear from you.
         </p>
       </div>
 
@@ -61,44 +62,58 @@ export default function ContactPage() {
         <Card className="p-8 lg:col-span-2">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2">
-              <Input
-                label="First Name"
-                placeholder="John"
-                required
-              />
-              <Input
-                label="Last Name"
-                placeholder="Doe"
-                required
-              />
+              <TextField className="w-full" isRequired>
+                <Label>First Name</Label>
+
+                <Input
+                  name="firstName"
+                  placeholder="John"
+                  autoComplete="given-name"
+                />
+              </TextField>
+
+              <TextField className="w-full" isRequired>
+                <Label>Last Name</Label>
+
+                <Input
+                  name="lastName"
+                  placeholder="Doe"
+                  autoComplete="family-name"
+                />
+              </TextField>
             </div>
 
-            <Input
-              label="Email Address"
-              type="email"
-              placeholder="john@example.com"
-              required
-            />
+            <TextField className="w-full" isRequired>
+              <Label>Email Address</Label>
 
-            <Input
-              label="Subject"
-              placeholder="How can we help?"
-              required
-            />
+              <Input
+                name="email"
+                type="email"
+                placeholder="john@example.com"
+                autoComplete="email"
+              />
+            </TextField>
 
-            <TextArea
-              label="Message"
-              placeholder="Tell us more about your inquiry..."
-              minRows={5}
-              required
-            />
+            <TextField className="w-full" isRequired>
+              <Label>Subject</Label>
+
+              <Input name="subject" placeholder="How can we help?" />
+            </TextField>
+
+            <TextField className="w-full" isRequired>
+              <Label>Message</Label>
+
+              <TextArea
+                name="message"
+                placeholder="Tell us more about your inquiry..."
+                rows={5}
+              />
+            </TextField>
 
             <Button
               type="submit"
-              color="primary"
-              size="lg"
-              fullWidth
               isLoading={isSubmitting}
+              className="w-full h-10"
             >
               Send Message
             </Button>

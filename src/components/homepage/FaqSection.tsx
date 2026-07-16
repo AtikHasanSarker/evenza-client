@@ -1,6 +1,7 @@
 "use client";
 
-import { Accordion, AccordionItem } from "@heroui/react";
+import { ChevronDown } from "@gravity-ui/icons";
+import { Accordion } from "@heroui/react";
 
 const faqs = [
   {
@@ -50,19 +51,27 @@ export default function FaqSection() {
           </p>
         </div>
 
-        <Accordion
-          variant="bordered"
-          selectionMode="multiple"
-          className="rounded-xl"
-        >
+        <Accordion className="w-full rounded-xl">
           {faqs.map((faq) => (
-            <AccordionItem
-              key={faq.key}
-              aria-label={faq.title}
-              title={faq.title}
-            >
-              <p className="leading-7 text-gray-600">{faq.content}</p>
-            </AccordionItem>
+            <Accordion.Item key={faq.key}>
+              <Accordion.Heading>
+                <Accordion.Trigger>
+                  <span className="flex-1 text-left font-semibold">
+                    {faq.title}
+                  </span>
+
+                  <Accordion.Indicator>
+                    <ChevronDown />
+                  </Accordion.Indicator>
+                </Accordion.Trigger>
+              </Accordion.Heading>
+
+              <Accordion.Panel>
+                <Accordion.Body>
+                  <p className="leading-7 text-gray-600">{faq.content}</p>
+                </Accordion.Body>
+              </Accordion.Panel>
+            </Accordion.Item>
           ))}
         </Accordion>
       </div>
