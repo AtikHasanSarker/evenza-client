@@ -10,6 +10,7 @@ export interface Event {
   date: string;
   location: string;
   price: number;
+  seats: number;
   description: string;
   venue: string;
   organizer: {
@@ -77,6 +78,20 @@ export const fetchEventById = async (id: string): Promise<Event> => {
   }
 };
 
+
+/**
+ * Fetch events by user ID
+ */
+export const fetchEventByUserId = async (userId: string): Promise<EventsResponse> => {
+  try {
+    const response = await axios.get<EventsResponse>(`${API_BASE_URL}/events/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch event details:", error);
+    throw error;
+  }
+};
+
 /**
  * Create a new event (requires authentication)
  */
@@ -89,7 +104,7 @@ export const createEvent = async (eventData: Partial<Event>): Promise<EventDetai
 
     return response.data;
   } catch (error) {
-    console.error("Failed to create event:", error);
+    console.error("Failed to create event:");
     throw error;
   }
 };
@@ -108,4 +123,12 @@ export const deleteEvent = async (id: string): Promise<{ success: boolean }> => 
     console.error("Failed to delete event:", error);
     throw error;
   }
+};
+
+
+//featured event
+export const fetchFeaturedEvents = async (): Promise<Event[]> => {
+  const response = await axios.get<Event[]>(`${API_BASE_URL}/featured-events`);
+
+  return response.data;
 };

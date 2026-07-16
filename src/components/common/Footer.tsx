@@ -13,9 +13,9 @@ export default function Footer() {
 
   return (
     <footer className="border-t bg-white">
-      <div className="mx-auto grid max-w-7xl gap-20 px-4 py-8 md:grid-cols-5">
+      <div className="mx-auto grid max-w-7xl lg:gap-20 gap-10 px-4 py-8 md:grid-cols-5">
         {/* Logo & Description */}
-        <div className="col-span-2">
+        <div className="md:col-span-2">
           <Link href="/">
             <Image src={logo} alt="Evenza Logo" width={250} height={250} />
           </Link>

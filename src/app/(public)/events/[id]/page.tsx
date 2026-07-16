@@ -28,13 +28,11 @@ export default function EventDetailsPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [relatedEvents, setRelatedEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
         setIsLoading(true);
-        setError(null);
 
         const eventData = await fetchEventById(eventId);
         setEvent(eventData);
@@ -42,8 +40,6 @@ export default function EventDetailsPage() {
         setRelatedEvents(
           relatedData.data.filter((e) => e._id !== eventId).slice(0, 3)
         );
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load event");
       } finally {
         setIsLoading(false);
       }
@@ -64,12 +60,12 @@ export default function EventDetailsPage() {
   console.log(relatedEvents);
   console.log(event);
 
-  if (error || !event) {
+  if (!event) {
     return (
       <div className="space-y-6 py-12">
         <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center">
           <p className="text-lg text-red-700">
-            {error || "Event not found"}
+            {"Event not found"}
           </p>
           <Link href="/explore">
             <Button className="mt-4 p-2">
@@ -281,17 +277,17 @@ export default function EventDetailsPage() {
 
       {/* Related Events */}
       {relatedEvents.length > 0 && (
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="space-y-6 mt-20">
+          <div className="flex items-center gap-3 justify-between">
             <h2 className="text-3xl font-bold text-gray-900">
               More Events in {event.category}
             </h2>
-            <Link href={`/explore?category=${event.category}`}>
+            <Link href={`/events`}>
               <Button
                 variant="light"
                 color="secondary"
                 endContent={<ArrowRight size={18} />}
-                className="px-2 h-10"
+                className="px-2 w-30 h-10"
               >
                 View All
               </Button>

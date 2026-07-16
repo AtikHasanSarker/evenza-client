@@ -81,7 +81,7 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`text-sm font-medium transition-colors ${
+              className={`font-semibold transition-colors ${
                 isActive(item.href)
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"

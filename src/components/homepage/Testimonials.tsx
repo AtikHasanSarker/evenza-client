@@ -4,21 +4,21 @@ const testimonials = [
   {
     name: "Sarah Ahmed",
     role: "Event Attendee",
-    image: "/images/users/user-1.jpg",
+    image: "https://randomuser.me/api/portraits/women/44.jpg",
     review:
       "Evenza made it incredibly easy to discover local events. The platform is simple, clean, and everything I needed was just a few clicks away.",
   },
   {
     name: "Tanvir Hasan",
     role: "Event Organizer",
-    image: "/images/users/user-2.jpg",
+    image: "https://randomuser.me/api/portraits/men/32.jpg",
     review:
       "Publishing and managing events has never been this easy. Evenza helped me reach more participants without any hassle.",
   },
   {
     name: "Nusrat Jahan",
     role: "Community Member",
-    image: "/images/users/user-3.jpg",
+    image: "https://randomuser.me/api/portraits/women/68.jpg",
     review:
       "I love how organized the platform feels. Searching events and finding the right one takes only a few seconds.",
   },

@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@heroui/react";
 import Button from "../ui/Button";
+import { createEvent } from "@/services/api/events";
 
 
 const categories = [
@@ -25,7 +26,7 @@ const categories = [
 
 export default function AddEventForm() {
   const router = useRouter();
- const [category, setCategory] = useState<string | null>(null);
+ const [category, setCategory] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,28 +37,26 @@ export default function AddEventForm() {
     const formData = new FormData(e.currentTarget);
 
     const eventData = {
-      title: formData.get("title"),
-      banner: formData.get("banner"),
-      shortDescription: formData.get("shortDescription"),
-      description: formData.get("description"),
-      category: category,
-      date: formData.get("date"),
-      time: formData.get("time"),
-      venue: formData.get("venue"),
-      location: formData.get("location"),
-      ticketPrice: Number(formData.get("ticketPrice")),
-      organizerName: formData.get("organizerName"),
-      organizerEmail: formData.get("organizerEmail"),
+      title: formData.get("title") as string,
+      image: formData.get("banner") as string,
+      description: formData.get("description") as string,
+      category,
+      date: formData.get("date") as string,
+      time: formData.get("time") as string,
+      venue: formData.get("venue") as string,
+      location: formData.get("location") as string,
+      price: Number(formData.get("ticketPrice")),
+      seats: Number(formData.get("seats")),
+      organizer: {
+        name: formData.get("organizerName") as string,
+        email: formData.get("organizerEmail") as string,
+      },
     };
 
     try {
       console.log(eventData);
-
-      // TODO:
-      // await createEvent(eventData);
-
+      await createEvent(eventData);
       toast.success("Event created successfully.");
-
       router.push("/dashboard/manage-events");
     } catch (error) {
       toast.error(
@@ -112,6 +111,11 @@ export default function AddEventForm() {
         </TextField>
 
         <TextField className="w-full" isRequired>
+          <Label>Total Seats</Label>
+          <Input name="seats" type="number" placeholder="100" />
+        </TextField>
+
+        <TextField className="w-full" isRequired>
           <Label>Event Date</Label>
           <Input name="date" type="date" />
         </TextField>
@@ -146,20 +150,11 @@ export default function AddEventForm() {
         </TextField>
 
         <TextField className="w-full" isRequired>
-          <Label>Short Description</Label>
-          <TextArea
-            name="shortDescription"
-            placeholder="Write a short description..."
-            rows={3}
-          />
-        </TextField>
-
-        <TextField className="w-full" isRequired>
-          <Label>Full Description</Label>
+          <Label>Description</Label>
           <TextArea
             name="description"
-            placeholder="Write the full event description..."
-            rows={6}
+            placeholder="Write a short description for the event..."
+            rows={4}
           />
         </TextField>
       </div>
